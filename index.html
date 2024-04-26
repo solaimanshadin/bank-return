@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>
+        <p>Please Select Invesment Type:</p>
+          <input checked type="radio" id="fixedDeposit" name="investmentType" value="fixedDeposit">
+          <label for="fixedDeposit">Fixed Deposit</label><br>
+          <input type="radio" id="monthlyDeposit" name="investmentType" value="monthlyDeposit">
+          <label for="monthlyDeposit">Monthly Deposit</label>
+    </div>
+    <input placeholder="Principal" id="principalAmount" type="number">
+    <input placeholder="Interest Rate" id="interestRate" type="number">
+    <input style="display: none;" placeholder="Active Investmest Year" id="activeInvestmentYear" type="number">
+    <input placeholder="Bank Deposit Year" id="bankDepositYear" type="number">
+    <h4 class="output"></h4>
+    <ol class="yearlyBreakDown"></ol>
+    <script src="app.js"></script>
+</body>
+
+</html>
