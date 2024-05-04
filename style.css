@@ -1,7 +1,8 @@
 /* Body styles */
-*{
+* {
     padding: 0;
 }
+
 body {
     font-family: Arial, sans-serif;
     background: #F1EAFD;
@@ -14,29 +15,35 @@ body {
 .text-center {
     text-align: center;
 }
-.brand{
+
+.brand {
     font-weight: normal;
 }
-.grid{
+
+.grid {
     display: grid;
-    grid-template-columns: auto 1fr ;
+    grid-template-columns: auto 1fr;
 }
-.display-section{
+
+.display-section {
     background: #e8f5e98f;
     padding: 20px;
     box-shadow: 5px 5px 51px #f7ffee;
     color: #616161;
 }
-.form{
+
+.form {
     padding: 20px;
     padding-bottom: 0;
 
 }
-.output{
+
+.output {
     font-weight: 700;
     font-size: 18px;
 }
-.output p{
+
+.output p {
     margin: 0;
     line-height: 1.5em;
 }
@@ -130,9 +137,9 @@ body {
     display: block;
 }
 
-@media screen and (max-width: 765px){
-    .grid{
+@media screen and (max-width: 765px) {
+    .grid {
         grid-template-columns: 1fr;
     }
-    
+
 }
