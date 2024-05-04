@@ -1,14 +1,17 @@
+
 const principalAmountInput  = document.querySelector('#principalAmount')
+const montlyDepositAmountInput  = document.querySelector('#monthlyDepositAmount')
 const interestRateInput  = document.querySelector('#interestRate')
 const bankDepositYearInput  = document.querySelector('#bankDepositYear')
 const activeInvestmentYearInput  = document.querySelector('#activeInvestmentYear')
+
 const invesmentTypeInputs = document.querySelectorAll('[name="investmentType"]')
 
 const output  = document.querySelector('.output')
 const yearlyBreakDownList  = document.querySelector(".yearlyBreakDown")
 
 
-function calculateTotalWithInterest(_principal, options) {
+function calculateIterest(_principal, options) {
 
     // default options.yearlyInterest
     let interestRate = Number(interestRateInput.value);
@@ -19,7 +22,7 @@ function calculateTotalWithInterest(_principal, options) {
 
     const interest = (_principal*interestRate) / 100;
      
-    return _principal + interest;
+    return interest;
 }
 
 
@@ -28,12 +31,12 @@ function getTotalAmount() {
     const activeInvesmentYear = Number(activeInvestmentYearInput.value);
     const principalAmount = Number(principalAmountInput.value)
     const invesmentType = document.querySelector('[name="investmentType"]:checked').value
-
-
+    const montlyDepositAmount = Number(montlyDepositAmountInput.value);
     const yearlyAmounts = new Array(bankDepositYear);
 
     const result = {
-        totalAmount: 0,
+        totalAmount: principalAmountInput.value,
+        totalInterest: 0,
         yearlyData: []
     }
 
@@ -43,17 +46,19 @@ function getTotalAmount() {
 
 
 
-    if(invesmentType === 'monthlyDeposit'){
+    if(invesmentType === 'monthlyDeposit' && montlyDepositAmount){
         const monthlyAmounts = new Array(bankDepositYear*12);
-        monthlyAmounts[0] = principalAmount;
+        monthlyAmounts[0] = principalAmount || montlyDepositAmount;
 
         for (let index = 1; index < monthlyAmounts.length; index++) {
             const year = (index+1) / 12;
-            const newInvestedAmount = year <= activeInvesmentYear ?  principalAmount : 0;
-
-            monthlyAmounts[index] = calculateTotalWithInterest(monthlyAmounts[index-1], {
+            const newInvestedAmount = year <= activeInvesmentYear ?  montlyDepositAmount : 0;
+            const amountUntilPreviousMonth = monthlyAmounts[index-1];
+            const interestOfThisMonth = calculateIterest(amountUntilPreviousMonth, {
                 monthlyInterest: true
-            }) + newInvestedAmount;
+            })
+            result.totalInterest += interestOfThisMonth; 
+            monthlyAmounts[index] = amountUntilPreviousMonth + interestOfThisMonth + newInvestedAmount;
 
             // recording yearly data on each 12th month
             if(year >= 1 && year % 1 === 0) {
@@ -61,17 +66,22 @@ function getTotalAmount() {
             }
         }
         result.totalAmount = monthlyAmounts[bankDepositYear*12-1];
+        result.monthlyAmounts = monthlyAmounts
     }else{
-        yearlyAmounts[0] = calculateTotalWithInterest(principalAmount);
+        const interestFirstThisYear = calculateIterest(principalAmount)
+        yearlyAmounts[0] = principalAmount + interestFirstThisYear;
+        result.totalInterest += interestFirstThisYear;
 
         for (let index = 1; index < yearlyAmounts.length; index++) {
-            yearlyAmounts[index] = calculateTotalWithInterest(yearlyAmounts[index-1])
+            const amountUntilPreviousYear = yearlyAmounts[index-1];
+            const interestOfThisYear = calculateIterest(amountUntilPreviousYear)
+            result.totalInterest += interestOfThisYear;
+            yearlyAmounts[index] = amountUntilPreviousYear + interestOfThisYear;
         }
         result.totalAmount = yearlyAmounts[bankDepositYear-1];
     }
 
     result.yearlyData = yearlyAmounts;
-
     return result;
     
 }
@@ -80,32 +90,105 @@ function formatCurrency(amount) {
     return new Intl.NumberFormat('en-IN').format(parseInt(amount))
 }
 
-function displayResult({totalAmount, yearlyData}) {
+function numbersToBdtString(number) {
+    let parsedAmount = parseInt(number)
+    const bdtMap = {
+        Koti: 0,
+        Lakh: 0,
+        Hajar: 0,
+        Shoto: 0,
+        Tk: 0
+    }
+
+    const currencyDevision = ['Tk', 'Shoto', 'Hajar', 'Lakh', 'Koti']
+    let iterrationIndex = 0;
+
+    while(parsedAmount > 0) {
+        
+        const divider = iterrationIndex === 1 ? 10 :100;
+        const digit = parsedAmount % divider;
+        bdtMap[currencyDevision[iterrationIndex]] = digit;
+        if(iterrationIndex == 4) {
+            bdtMap.Koti = parsedAmount;
+            parsedAmount = 0;
+        }
+        iterrationIndex++;
+        parsedAmount= parseInt(parsedAmount/divider);
+
+    }
+    
+    const fiteredAkors = Object.entries(bdtMap).filter(([, amount]) => amount)
+    
+    const bdtString = [...fiteredAkors].slice(0, 2).map(([akor, amount])=>`${amount} ${akor}`).join(' ')  + `${fiteredAkors.length > 2 ? '...': ''}`|| 'Zero' ;
+
+    return bdtString
+
+}
+function displayResult({totalAmount, totalInterest, yearlyData}) {
     const formattedAmount =  formatCurrency(totalAmount)
-    output.textContent = formattedAmount;
-    yearlyBreakDownList.innerHTML = yearlyData?.map((yearlyAmount, index) => `<li>After year ${index+1} : ${formatCurrency(yearlyAmount)}</li>`).join('')
+    const formattedInterest = formatCurrency(totalInterest)
+    const totalPrincipal = totalAmount-totalInterest;
+    const formattedPricipal = formatCurrency(totalPrincipal)
+
+    const outputTemplate = `
+    <p> Maturity Value: ${formattedAmount} (${numbersToBdtString(totalAmount)}) </p>
+    <p> Principal Amount: ${formattedPricipal} (${numbersToBdtString(totalPrincipal)})  </p>
+    <p> Total Interest : ${formattedInterest} (${numbersToBdtString(totalInterest)}) </p>
+    `;
+    output.innerHTML = outputTemplate;
+
+    yearlyBreakDownList.innerHTML = yearlyData?.map((yearlyAmount, index) => `<li>After year ${index+1} : ${formatCurrency(yearlyAmount)} (${numbersToBdtString(yearlyAmount)})</li>`).join('')
     
 }
 
-function calculateAnddisplayResult() {
-    const data = getTotalAmount()
-    console.log("data", data)
+function calculateAndDisplayResult() {
     displayResult(getTotalAmount())    
 }
 
-principalAmountInput.addEventListener('input', calculateAnddisplayResult)
-bankDepositYearInput.addEventListener('input', calculateAnddisplayResult)
-activeInvestmentYearInput.addEventListener('input', calculateAnddisplayResult)
-interestRateInput.addEventListener('input', calculateAnddisplayResult)
+principalAmountInput.addEventListener('input', calculateAndDisplayResult)
+montlyDepositAmountInput.addEventListener('input', calculateAndDisplayResult)
+bankDepositYearInput.addEventListener('input', ({target}) => {
+    if(activeInvestmentYearInput.value > target.value) {
+        activeInvestmentYearInput.value = target.value;
+    }
+    
+    calculateAndDisplayResult()
+})
+activeInvestmentYearInput.addEventListener('input', ({target}) => {
+    if(bankDepositYearInput.value < target.value) {
+        bankDepositYearInput.value = target.value;
+    }
+    
+    calculateAndDisplayResult()
+} )
+interestRateInput.addEventListener('input', calculateAndDisplayResult)
 
 invesmentTypeInputs.forEach(radioInput => {
     radioInput.addEventListener('click', ({target}) => {
-        console.log("target",target.value)
+        invesmentTypeInputs.forEach(radio => radio.parentElement.classList.remove('active'))
+        target.parentElement.classList.add('active')
         if(target.value === 'fixedDeposit'){
-            activeInvestmentYearInput.style.display = "none"
+            activeInvestmentYearInput.parentElement.classList.add('d-none')
+            activeInvestmentYearInput.parentElement.classList.remove('d-block')
+            montlyDepositAmountInput.parentElement.classList.add('d-none')
+            montlyDepositAmountInput.parentElement.classList.remove('d-block')
+            principalAmountInput.parentElement.children[0].textContent = "Principal Amount";
+            principalAmountInput.parentElement.children[0].placeholder = "Principal Amount"
         }else {
-            activeInvestmentYearInput.style.display = "inline-block"
+            principalAmountInput.parentElement.children[0].textContent = "Initial Deposit Amount (optional)"
+            principalAmountInput.parentElement.children[0].placeholder = "Initial Deposit Amount"
+
+            activeInvestmentYearInput.parentElement.classList.add('d-block')
+            activeInvestmentYearInput.parentElement.classList.remove('d-none')
+            montlyDepositAmountInput.parentElement.classList.add('d-block')
+            montlyDepositAmountInput.parentElement.classList.remove('d-none')
         }
-        calculateAnddisplayResult()
+        calculateAndDisplayResult()
     })
 })
+
+calculateAndDisplayResult()
+
+if('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+}

@@ -5,23 +5,64 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="shortcut icon" href="icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="/manifest.json">
+
+    <title>Investment Calculator</title>
 </head>
 
 <body>
-    <div>
-        <p>Please Select Invesment Type:</p>
-          <input checked type="radio" id="fixedDeposit" name="investmentType" value="fixedDeposit">
-          <label for="fixedDeposit">Fixed Deposit</label><br>
-          <input type="radio" id="monthlyDeposit" name="investmentType" value="monthlyDeposit">
-          <label for="monthlyDeposit">Monthly Deposit</label>
+    <h2 class="brand text-center">Investment Calculator</h2>
+
+    <div class="container">
+        <div class="grid">
+                    <div class="form">
+            <div class="form-group">
+                <div class="radio-group">
+                    <div class="radio-control active">
+                        <label for="fixedDeposit">Fixed Deposit</label>
+                        <input checked type="radio" id="fixedDeposit" name="investmentType" value="fixedDeposit">
+                    </div>
+                    <div class="radio-control">
+                        <label for="monthlyDeposit">Monthly Deposit</label>
+                        <input type="radio" id="monthlyDeposit" name="investmentType" value="monthlyDeposit">
+                    </div>
+                </div>
+
+                 
+            </div>
+            <div class="form-group">
+                <label for="principalAmount">Principal</label>
+                <input value="100000" placeholder="Principal" id="principalAmount" type="number">
+            </div>
+            <div class="form-group d-none">
+                <label for="monthlyDepositAmount">Monthly Deposit Amount</label>
+                <input value="1700" placeholder="Monthly Deposit Amount" id="monthlyDepositAmount" type="number">
+            </div>
+            <div class="form-group">
+                <label for="interestRate">Interest Rate</label>
+                <input value="12.5" placeholder="Interest Rate" id="interestRate" type="number">
+            </div>
+            <div class="form-group d-none">
+                <label for="activeInvestmentYear">Active Investmest Year</label>
+                <input value="15" placeholder="Active Investmest Year" id="activeInvestmentYear" type="number">
+            </div>
+            <div class="form-group">
+                <label for="bankDepositYear">Bank Deposit Year</label>
+                <input value="35" placeholder="Bank Deposit Year" id="bankDepositYear" type="number">
+            </div>
+             
+        </div>
+        <div class="display-section">
+
+            <div class="output"></div>
+            <ol class="yearlyBreakDown"></ol>
+        </div>
+        </div>
+
     </div>
-    <input placeholder="Principal" id="principalAmount" type="number">
-    <input placeholder="Interest Rate" id="interestRate" type="number">
-    <input style="display: none;" placeholder="Active Investmest Year" id="activeInvestmentYear" type="number">
-    <input placeholder="Bank Deposit Year" id="bankDepositYear" type="number">
-    <h4 class="output"></h4>
-    <ol class="yearlyBreakDown"></ol>
+
     <script src="app.js"></script>
 </body>
 

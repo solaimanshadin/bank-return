@@ -1,0 +1,138 @@
+/* Body styles */
+*{
+    padding: 0;
+}
+body {
+    font-family: Arial, sans-serif;
+    background: #F1EAFD;
+    background: linear-gradient(169deg, #F1EAFD 0%, rgba(250, 250, 251, 0.40802258403361347) 44%, rgba(255, 255, 255, 0.5592830882352942) 100%);
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 10px;
+}
+
+.text-center {
+    text-align: center;
+}
+.brand{
+    font-weight: normal;
+}
+.grid{
+    display: grid;
+    grid-template-columns: auto 1fr ;
+}
+.display-section{
+    background: #e8f5e98f;
+    padding: 20px;
+    box-shadow: 5px 5px 51px #f7ffee;
+    color: #616161;
+}
+.form{
+    padding: 20px;
+    padding-bottom: 0;
+
+}
+.output{
+    font-weight: 700;
+    font-size: 18px;
+}
+.output p{
+    margin: 0;
+    line-height: 1.5em;
+}
+
+/* Container styles */
+.container {
+    max-width: 900px;
+    margin: 10px auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+}
+
+/* Form styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.radio-group {
+    display: flex;
+    gap: 10px;
+    border-radius: 9px;
+    padding: 7px;
+    width: max-content;
+    margin: auto;
+    color: #7D90A9;
+    background: #F8FAFC;
+    justify-content: ce;
+
+}
+
+.radio-control {
+    padding: 10px 20px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-weight: 500;
+
+    box-sizing: border-box;
+}
+
+.radio-control.active {
+    background: #FFFFFF;
+    box-shadow: 0 0 4px 1px #EDF0F6;
+    color: #000;
+
+}
+
+.radio-control input {
+    display: none;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.radio-control label {
+    all: unset;
+}
+
+.form-group input[type="number"],
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+
+
+/* Output and yearly breakdown styles */
+.output,
+.yearlyBreakDown {
+    margin-top: 20px;
+}
+
+.yearlyBreakDown {
+    padding-left: 20px;
+}
+
+/* Hide monthly deposit amount and active investment year inputs initially */
+.d-none {
+    display: none;
+}
+
+.d-block {
+    display: block;
+}
+
+@media screen and (max-width: 765px){
+    .grid{
+        grid-template-columns: 1fr;
+    }
+    
+}
